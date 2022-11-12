@@ -17,17 +17,15 @@ public class LoginServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         Object attr = req.getSession().getAttribute("user");
 
-        RequestDispatcher requestDispatcher;
-        if (attr == null){
-            requestDispatcher = req.getRequestDispatcher("user/hello.jsp");
+        if (attr != null){
+            resp.sendRedirect("user/hello.jsp");
         }else {
-            requestDispatcher = req.getRequestDispatcher("login.jsp");
+            resp.sendRedirect("login.jsp");
         }
-        requestDispatcher.forward(req, resp);
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
         String login = req.getParameter("login");
         String pass = req.getParameter("password");
 
@@ -35,10 +33,10 @@ public class LoginServlet extends HttpServlet {
 
             if (Users.getInstance().getUsers().contains(login) && pass.trim().length() != 0) {
                 req.getSession().setAttribute("user", login);
-                resp.sendRedirect("user/hello.jsp");
+                resp.sendRedirect("/user/hello.jsp");
             }
         } else {
-            resp.sendRedirect("login.jsp");
+            req.getRequestDispatcher("/login.jsp").forward(req, resp);
         }
 
     }
